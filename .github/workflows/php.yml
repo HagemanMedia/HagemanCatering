@@ -1,0 +1,16 @@
+name: PHP Lint
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  phpcs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+      - run: composer global require "squizlabs/php_codesniffer=*"
+      - run: ~/.composer/vendor/bin/phpcs -q --report=full
