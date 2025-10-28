@@ -1,3 +1,9 @@
+<?php
+
+if (! defined('ABSPATH')) {
+    exit;
+}
+
 /**
  * Custom Maatwerk Functionaliteit (Zonder WooCommerce)
  *
