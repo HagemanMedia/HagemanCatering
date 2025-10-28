@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<ruleset name="HagemanCatering">
+  <description>PHP_CodeSniffer regels</description>
+  <arg name="basepath" value="."/>
+  <file>app</file>
+  <rule ref="WordPress"/>
+  <rule ref="WordPress-Extra"/>
+  <config name="testVersion" value="7.4-"/>
+  <exclude-pattern>*/vendor/*</exclude-pattern>
+</ruleset>

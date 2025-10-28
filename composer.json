@@ -1,0 +1,15 @@
+{
+  "name": "hagemanmedia/hagemancatering",
+  "type": "project",
+  "require": {},
+  "autoload": {
+    "psr-4": {
+      "HM\\": "app/shared/HM/"
+    }
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "@php -r "echo 'Composer autoload rebuilt.' . PHP_EOL;""
+    ]
+  }
+}
