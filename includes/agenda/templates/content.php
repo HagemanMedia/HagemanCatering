@@ -106,7 +106,6 @@ function hageman_catering_render_agenda_content($agenda, $week_start_timestamp, 
 
                 if ($item['type'] === 'woocommerce') {
                     $item_type_class = 'wc-weekagenda-item-woocommerce'; // Blauwe streep
-                    error_log('DEBUG: WooCommerce Order ID: ' . $item['order_id'] . ' Post Status: ' . $item['post_status']); // DEBUG LOG
                     if ($item['post_status'] === 'wc-processing' || $item['post_status'] === 'wc-completed') { // Processing en Completed zijn groen
                         $badge_class .= ' status-wc-green';
                     } else if ($item['post_status'] === 'wc-on-hold') { // On-hold blijft oranje
@@ -120,7 +119,6 @@ function hageman_catering_render_agenda_content($agenda, $week_start_timestamp, 
                     $optie_geldig_tot = isset($item['optie_geldig_tot']) ? $item['optie_geldig_tot'] : '';
 
                     // DEBUG LOG: Log de maatwerk status en optie_geldig_tot
-                    error_log('DEBUG: Maatwerk Order ID: ' . $item['order_id'] . ' Status: ' . $maatwerk_status . ' Optie geldig tot: ' . $optie_geldig_tot); // DEBUG LOG
 
                     // Formatteer de maatwerk status voor weergave
                     $formatted_maatwerk_status = ucfirst(str_replace('_', ' ', $maatwerk_status));

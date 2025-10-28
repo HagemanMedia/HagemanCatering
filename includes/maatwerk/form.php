@@ -17,15 +17,15 @@ if (! defined('ABSPATH')) {
 | 2. Maatwerk Bestelformulier Shortcode
 |--------------------------------------------------------------------------
 */
-add_shortcode('maatwerk_bestelformulier', 'display_maatwerk_bestelformulier');
 
-function display_maatwerk_bestelformulier() {
+function display_maatwerk_bestelformulier($atts = []) {
     ob_start(); // Start output buffering
 
     $feedback_message = '';
     $edit_post_id = 0; // Standaard, geen bestelling wordt bewerkt
     $is_updating = false; // <-- TOEGEVOEGD: Initieel is het geen update
     $current_post_id = 0; // <-- TOEGEVOEGD: Initieel is er geen huidige post ID
+    $should_auto_close = false;
 
     $form_data = array(
         'order_nummer'           => '',
@@ -142,9 +142,6 @@ function display_maatwerk_bestelformulier() {
     if (!isset($submit_button_text)) {
         $submit_button_text = 'Aanmaken'; // Standaardtekst als er niet wordt bewerkt
     }
-
-    // Tijdelijk voor debuggen, daarna weer weghalen!
-    error_log(print_r($_POST, true));
 
     // VERPLAATST EN AANGEPAST: Verwerk POST-gegevens hier
     if (isset($_POST['submit_bestelling']) && wp_verify_nonce($_POST['_wpnonce_maatwerk_form'], 'maatwerk_form_nonce')) {
@@ -363,14 +360,8 @@ function display_maatwerk_bestelformulier() {
                 $to = get_option('admin_email');
                 wp_mail($to, $subject, $message_body, array('Content-Type: text/plain; charset=UTF-8'));
 
-                // Vervang redirect naar bedankpagina door automatisch sluiten na 3 seconden
-                echo '<script type="text/javascript">';
-                echo 'setTimeout(function() {'; // Start de timer
-                echo 'if (window.opener) { window.opener.location.reload(); }'; // Vernieuw ouder venster indien aanwezig
-                echo 'window.close();'; // Sluit het huidige venster/tabblad
-                echo '}, 100);'; // 3000 milliseconden = 3 seconden vertraging
-                echo '</script>';
-                exit; // Belangrijk om de uitvoering te stoppen na het JavaScript
+                $feedback_message = '<div class="form-success">Bestelling succesvol opgeslagen.</div>';
+                $should_auto_close = true;
             }
 
         } else {
@@ -381,366 +372,29 @@ function display_maatwerk_bestelformulier() {
             $feedback_message .= '</ul></div>';
         }
     } // Einde van de POST-verwerkingslogica
+    $existing_employees_json = wp_json_encode($form_data['employee_details']);
+    $wrapper_data_attributes = [
+        'data-auto-close' => $should_auto_close ? 'true' : 'false',
+        'data-existing-employees' => $existing_employees_json,
+    ];
+
+    if ($edit_post_id) {
+        $wrapper_data_attributes['data-edit-id'] = (string) $edit_post_id;
+    }
+
+    $wrapper_attr_string = '';
+    foreach ($wrapper_data_attributes as $attr_key => $attr_value) {
+        if ($attr_value === null || $attr_value === '') {
+            continue;
+        }
+
+        $wrapper_attr_string .= sprintf(' %s="%s"', $attr_key, esc_attr($attr_value));
+    }
     ?>
 
-    <style>
-        /* Basis styling voor het formulier */
-        .maatwerk-bestelformulier-wrapper {
-            max-width: 800px;
-            margin: 30px auto;
-            padding: 0;
-            background: none;
-            border-radius: 0;
-            box-shadow: none;
-            font-family: "Roboto", sans-serif;
-            line-height: 1.6;
-            color: #E0E0E0;
-        }
-
-        .maatwerk-bestelformulier-wrapper h2 {
-            display: none;
-        }
-
-        .maatwerk-bestelformulier-wrapper .form-section-title {
-            color: #4CAF50;
-            font-size: 1.6em;
-            margin-top: 30px;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #4CAF50;
-            padding-bottom: 5px;
-        }
-
-        .maatwerk-bestelformulier-wrapper .form-group {
-            margin-bottom: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            align-items: flex-end; /* Align items at the bottom */
-        }
-
-        /* Full width for single field groups */
-        .maatwerk-bestelformulier-wrapper .form-group.full-width .form-field {
-            flex: 1 1 100%;
-            min-width: unset;
-        }
-
-        /* Three columns layout */
-        .maatwerk-bestelformulier-wrapper .form-group.three-cols .form-field {
-            flex: 1 1 calc(33.33% - 20px); /* Adjust gap if needed */
-            min-width: 180px; /* Adjust as needed for smaller screens */
-        }
 
 
-        .maatwerk-bestelformulier-wrapper .form-field {
-            flex: 1 1 calc(50% - 20px);
-            min-width: 280px;
-            margin-bottom: 0;
-        }
-
-        .maatwerk-bestelformulier-wrapper .form-group + .form-group {
-            margin-top: 20px;
-        }
-
-        .maatwerk-bestelformulier-wrapper input[type="text"],
-        .maatwerk-bestelformulier-wrapper input[type="email"],
-        .maatwerk-bestelformulier-wrapper input[type="tel"],
-        .maatwerk-bestelformulier-wrapper input[type="date"],
-        .maatwerk-bestelformulier-wrapper input[type="time"],
-        .maatwerk-bestelformulier-wrapper input[type="number"],
-        .maatwerk-bestelformulier-wrapper textarea,
-        .maatwerk-bestelformulier-wrapper input[type="file"],
-        .maatwerk-bestelformulier-wrapper select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #555;
-            border-radius: 5px;
-            font-size: 1em;
-            box-sizing: border-box;
-            transition: border-color 0.3s ease, background-color 0.3s ease;
-            background-color: #3B3B4C;
-            color: #FFFFFF;
-            height: 44px; /* Fix the height for all input/select fields */
-        }
-
-        .maatwerk-bestelformulier-wrapper textarea {
-            height: auto; /* Override fixed height for textarea */
-            min-height: 100px;
-        }
-
-        .maatwerk-bestelformulier-wrapper input[type="file"] {
-            padding: 10px;
-        }
-
-        .maatwerk-bestelformulier-wrapper input[type="text"]:focus,
-        .maatwerk-bestelformulier-wrapper input[type="email"]:focus,
-        .maatwerk-bestelformulier-wrapper input[type="tel"]:focus,
-        .maatwerk-bestelformulier-wrapper input[type="date"]:focus,
-        .maatwerk-bestelformulier-wrapper input[type="time"]:focus,
-        .maatwerk-bestelformulier-wrapper input[type="number"]:focus,
-        .maatwerk-bestelformulier-wrapper textarea:focus,
-        .maatwerk-bestelformulier-wrapper input[type="file"]:focus,
-        .maatwerk-bestelformulier-wrapper select:focus {
-            border-color: #4CAF50;
-            outline: none;
-            background-color: #4C4C60;
-        }
-
-        .maatwerk-bestelformulier-wrapper input[type="submit"] {
-            display: block;
-            width: auto;
-            padding: 15px 30px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin-top: 25px;
-            margin-left: 0; /* Links uitlijnen */
-            margin-right: auto;
-        }
-
-        .maatwerk-bestelformulier-wrapper input[type="submit"]:hover {
-            background-color: #388E3C;
-        }
-
-        .maatwerk-bestelformulier-wrapper .required-field {
-            color: #8BC34A;
-            font-weight: normal;
-        }
-
-        /* Feedback berichten */
-        .maatwerk-bestelformulier-wrapper .form-success {
-            background-color: #4CAF50;
-            color: #fff;
-            border: 1px solid #388E3C;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .maatwerk-bestelformulier-wrapper .form-error {
-            background-color: #F44336;
-            color: #fff;
-            border: 1px solid #D32F2F;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .maatwerk-bestelformulier-wrapper .form-error ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 10px 0 0 0;
-            text-align: left;
-        }
-
-        .maatwerk-bestelformulier-wrapper .form-error li {
-            margin-bottom: 5px;
-        }
-        .maatwerk-bestelformulier-wrapper label {
-            display: block;
-            margin-bottom: 5px;
-            color: #fff;
-            font-size: 0.9em;
-        }
-
-        /* Styling voor de autocomplete resultaten */
-        .user-search-results {
-            list-style: none;
-            padding: 0;
-            margin: 0; /* Belangrijk: geen margin boven/onder */
-            border: 1px solid #555;
-            background-color: #3B3B4C;
-            max-height: 200px;
-            overflow-y: auto;
-            position: absolute;
-            width: 100%; /* Maak de breedte gelijk aan de container */
-            z-index: 10;
-            border-radius: 0 0 5px 5px; /* Alleen onderranden afronden */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            box-sizing: border-box; /* Zorg dat padding en border binnen de breedte vallen */
-        }
-
-        .user-search-results li {
-            padding: 10px 12px;
-            cursor: pointer;
-            color: #E0E0E0;
-            border-bottom: 1px solid #555;
-        }
-
-        .user-search-results li:last-child {
-            border-bottom: none;
-        }
-
-        .user-search-results li:hover {
-            background-color: #4C4C60;
-        }
-        .form-field.user-search-container {
-            position: relative; /* Belangrijk voor positionering van de resultaten */
-        }
-        /* Verwijder de border-radius aan de onderkant van de input als de resultaten zichtbaar zijn */
-        #user_search.results-visible {
-            border-bottom-left-radius: 0;
-            border-bottom-right-radius: 0;
-        }
-
-        /* Nieuwe styling voor dynamische PDF velden */
-        #pdf-uploads-container {
-            position: relative; /* Enable absolute positioning for children */
-            padding-bottom: 40px; /* Make space for the absolute add button */
-            margin-bottom: 20px; /* Add some margin below the whole section */
-        }
-
-        .pdf-upload-group {
-            position: relative; /* Belangrijk voor absolute positionering van de knop */
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 15px;
-            align-items: flex-end; /* Zorgt ervoor dat alle elementen aan de onderkant uitlijnen */
-            border: 1px solid #555;
-            padding: 15px;
-            border-radius: 5px;
-            background-color: #353545;
-        }
-
-        .pdf-upload-group .form-field {
-            flex: 1 1 calc(70% - 15px); /* Neem 70% van de breedte voor het bestand */
-            min-width: 250px;
-        }
-
-        .pdf-upload-group .visibility-field {
-            flex: 1 1 calc(30% - 15px); /* Neem 30% van de breedte voor de schakelaar */
-            min-width: 120px;
-        }
-
-        /* Styling voor de nieuwe icon-buttons */
-        .pdf-action-button {
-            background-color: #4CAF50; /* Groen voor toevoegen */
-            color: white;
-            border: none;
-            border-radius: 50%; /* Rond maken */
-            width: 40px; /* Vaste breedte */
-            height: 40px; /* Vaste hoogte */
-            font-size: 1.5em; /* Groter icoon */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            flex-shrink: 0; /* Voorkom dat de knop kleiner wordt */
-            box-sizing: border-box; /* Zorg dat padding en border binnen de afmetingen vallen */
-        }
-
-        .pdf-action-button:hover {
-            background-color: #388E3C;
-            transform: scale(1.05);
-        }
-
-        /* Specifieke styling voor de rode verwijderknop */
-        .pdf-action-button.remove-button {
-            position: absolute; /* Absoluut positioneren ten opzichte van .pdf-upload-group */
-            top: -10px; /* Buiten de groep, beetje naar boven */
-            right: -10px; /* Buiten de groep, beetje naar rechts */
-            background-color: #F44336; /* Rood voor verwijderen */
-            width: 28px; /* Kleinere knop */
-            height: 28px; /* Kleinere knop */
-            font-size: 1.2em; /* Iets kleiner icoon */
-            border-radius: 50%; /* Blijft rond */
-            padding: 0; /* Geen extra padding */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Een subtiele schaduw */
-            z-index: 5; /* Zorg dat het boven de groep ligt */
-        }
-
-        .pdf-action-button.remove-button:hover {
-            background-color: #D32F2F;
-        }
-
-        .pdf-action-button.add-button {
-            position: absolute;
-            bottom: 40px;
-            left: -10px;
-            background-color: #4CAF50;
-            color: #fff;             /* Wit voor het plusje */
-            width: 28px;
-            height: 28px;
-            font-size: 1.4em;        /* Groter plusje */
-            line-height: 28px;       /* Centreer verticaal */
-            text-align: center;      /* Centreer horizontaal */
-            border-radius: 50%;
-            padding: 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            z-index: 5;
-            cursor: pointer;
-        }
-        .pdf-action-button.add-button:hover {
-            background-color: #388E3C;
-        }
-
-        /* Nieuwe styling voor medewerker-groepen */
-        .employee-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            border: 1px solid #555;
-            padding: 15px;
-            border-radius: 5px;
-            background-color: #2F2F41;
-            margin-bottom: 15px;
-            align-items: flex-end;
-        }
-        .employee-group .field {
-            flex: 1 1 calc(33.33% - 15px);
-            min-width: 150px;
-        }
-
-        /* Responsive aanpassingen */
-        @media (max-width: 768px) {
-            .maatwerk-bestelformulier-wrapper .form-field {
-                flex: 1 1 100%;
-            }
-            .maatwerk-bestelformulier-wrapper .form-group.three-cols .form-field {
-                flex: 1 1 100%; /* Maak ze stapelen op kleine schermen */
-            }
-            .pdf-upload-group {
-                flex-direction: column; /* Stapel elementen verticaal op kleine schermen */
-                align-items: stretch; /* Stretch items to full width */
-                padding-top: 25px; /* Geef ruimte voor de absolute verwijderknop */
-            }
-            .pdf-upload-group .form-field,
-            .pdf-upload-group .visibility-field {
-                flex: 1 1 100%; /* Volle breedte voor alle velden */
-                min-width: unset;
-            }
-            .pdf-upload-group .pdf-action-button.remove-button {
-                top: 5px;
-                right: 5px;
-                width: 25px; /* Iets kleiner op mobiel */
-                height: 25px;
-                font-size: 1.1em;
-            }
-            .pdf-action-button.add-button {
-                bottom: 5px;
-                left: 5px;
-                width: 25px;
-                height: 25px;
-                font-size: 1.1em;
-            }
-            .employee-group {
-                flex-direction: column;
-            }
-            .employee-group .field {
-                flex: 1 1 100%;
-            }
-        }
-    </style>
-
-    <div class="maatwerk-bestelformulier-wrapper">
+    <div class="maatwerk-bestelformulier-wrapper"<?php echo $wrapper_attr_string; ?>>
         <?php echo $feedback_message; ?>
         <?php echo $copied_message; ?>
 
@@ -760,9 +414,20 @@ function display_maatwerk_bestelformulier() {
                         <option value="datum-in-optie" <?php selected($form_data['order_status'], 'datum-in-optie'); ?>>Datum in optie</option>
                     </select>
                 </div>
-                <div class="form-field" id="optie_geldig_tot_field" style="display: <?php echo (in_array($form_data['order_status'], array('in-optie','datum-in-optie'), true)) ? 'block' : 'none'; ?>;">
+                <?php
+                $optie_field_classes = ['form-field', 'maatwerk-optie-geldig-field'];
+                if (in_array($form_data['order_status'], ['in-optie', 'datum-in-optie'], true)) {
+                    $optie_field_classes[] = 'is-visible';
+                }
+
+                $optie_star_classes = ['required-field'];
+                if ($form_data['order_status'] !== 'in-optie') {
+                    $optie_star_classes[] = 'is-hidden';
+                }
+                ?>
+                <div class="<?php echo esc_attr(implode(' ', $optie_field_classes)); ?>" id="optie_geldig_tot_field">
                     <label for="optie_geldig_tot">
-                        Optie Geldig Tot <span id="optie_req_star" class="required-field" style="<?php echo ($form_data['order_status']==='in-optie') ? '' : 'display:none;'; ?>">*</span>
+                        Optie Geldig Tot <span id="optie_req_star" class="<?php echo esc_attr(implode(' ', $optie_star_classes)); ?>">*</span>
                     </label>
                     <input type="date" id="optie_geldig_tot" name="optie_geldig_tot" value="<?php echo esc_attr($form_data['optie_geldig_tot']); ?>">
                 </div>
@@ -801,7 +466,7 @@ function display_maatwerk_bestelformulier() {
                     <label for="user_search">Zoek bestaande relatie</label>
                     <input type="text" id="user_search" placeholder="Zoek op naam, e-mail of ID">
                     <input type="hidden" id="user_id" name="user_id" value="<?php echo esc_attr($form_data['user_id']); ?>">
-                    <ul id="user_search_results" class="user-search-results" style="display: none;"></ul>
+                    <ul id="user_search_results" class="user-search-results is-hidden"></ul>
                 </div>
             </div>
             <div class="form-group full-width">
@@ -949,7 +614,7 @@ function display_maatwerk_bestelformulier() {
                             <option value="private">Interne medewerkers</option>
                         </select>
                     </div>
-                    <button type="button" class="pdf-action-button remove-button" data-id="0" style="display: none;">
+                    <button type="button" class="pdf-action-button remove-button is-hidden" data-id="0">
                         <span class="dashicons dashicons-no"></span>
                     </button>
                 </div>
@@ -959,55 +624,26 @@ function display_maatwerk_bestelformulier() {
 
             </div>
 
-            <div class="form-actions" style="display: flex; gap: 10px; margin-top: 20px; align-items: center;">
+            <div class="form-actions">
                 <input
                     type="submit"
                     name="submit_bestelling"
                     value="<?php echo esc_attr( $submit_button_text ); ?>"
-                    style="
-                        background: #4CAF50;
-                        color: #fff;
-                        padding: 10px 20px;
-                        font-size: 1em;
-                        border: none;
-                        border-radius: 5px;
-                        cursor: pointer;
-                    "
+                    class="button button--primary"
                 />
 
                 <?php if ( $edit_post_id ) : ?>
                     <button
                         type="button"
                         id="delete-order-button"
-                        style="
-                            background: #F44336;
-                            color: #fff;
-                            padding: 10px 20px;
-                            font-size: 1em;
-                            border: none;
-                            border-radius: 5px;
-                            cursor: pointer;
-                        "
+                        class="button button--danger"
                     >
                         Verwijder
                     </button>
 
                     <a
                         href="<?php echo esc_url( add_query_arg( 'maatwerk_copy', $edit_post_id ) ); ?>"
-                        style="
-                            background: #FF9800;
-                            color: #fff;
-                            padding: 10px 20px;
-                            font-size: 1em;
-                            border: none;
-                            border-radius: 5px;
-                            cursor: pointer;
-                            display: inline-block;
-                            text-decoration: none;
-                            line-height: 1.2;
-                        "
-                        onmouseover="this.style.background='#e68a00';"
-                        onmouseout="this.style.background='#FF9800';"
+                        class="button button--warning"
                     >
                         Kopieer
                     </a>
@@ -1018,233 +654,7 @@ function display_maatwerk_bestelformulier() {
         </form>
     </div>
 
-    <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function() {
-        // --- Toggle “Optie Geldig Tot” veld ---
-        var orderStatusSelect      = document.getElementById('order_status');
-        var optieGeldigTotField    = document.getElementById('optie_geldig_tot_field');
-        var optieGeldigTotInput    = document.getElementById('optie_geldig_tot');
-        var optieReqStar           = document.getElementById('optie_req_star');
-
-        function toggleOptieGeldigTotField() {
-            if (orderStatusSelect.value === 'in-optie') {
-                optieGeldigTotField.style.display = 'block';
-                optieGeldigTotInput.setAttribute('required', 'required');
-                if (optieReqStar) optieReqStar.style.display = '';
-            } else if (orderStatusSelect.value === 'datum-in-optie') {
-                // Tonen, maar NIET verplicht
-                optieGeldigTotField.style.display = 'block';
-                optieGeldigTotInput.removeAttribute('required');
-                if (optieReqStar) optieReqStar.style.display = 'none';
-            } else {
-                // Verbergen voor overige statussen
-                optieGeldigTotField.style.display = 'none';
-                optieGeldigTotInput.removeAttribute('required');
-                optieGeldigTotInput.value = '';
-                if (optieReqStar) optieReqStar.style.display = 'none';
-            }
-        }
-        orderStatusSelect.addEventListener('change', toggleOptieGeldigTotField);
-        toggleOptieGeldigTotField();
-
-        // --- AJAX voor WordPress gebruikers zoeken ---
-        var userSearchInput   = document.getElementById('user_search');
-        var userSearchResults = document.getElementById('user_search_results');
-        var hiddenUserId      = document.getElementById('user_id');
-        // velden om te vullen:
-        var maatwerkVoornaam    = document.getElementById('maatwerk_voornaam');
-        var maatwerkAchternaam  = document.getElementById('maatwerk_achternaam');
-        var maatwerkEmail       = document.getElementById('maatwerk_email');
-        var maatwerkTelefoon    = document.getElementById('maatwerk_telefoonnummer');
-        var bedrijfsnaam        = document.getElementById('bedrijfsnaam');
-        var straatHuisnummer    = document.getElementById('straat_huisnummer');
-        var postcode            = document.getElementById('postcode');
-        var plaats              = document.getElementById('plaats');
-        var searchTimeout;
-
-        userSearchInput.addEventListener('input', function() {
-            clearTimeout(searchTimeout);
-            var term = this.value.trim();
-            if (term.length < 2) {
-                userSearchResults.style.display = 'none';
-                return;
-            }
-            searchTimeout = setTimeout(function() {
-                var data = new FormData();
-                data.append('action', 'maatwerk_search_users');
-                data.append('search_term', term);
-                data.append('nonce', '<?php echo wp_create_nonce("maatwerk_search_users_nonce"); ?>');
-                fetch('<?php echo admin_url("admin-ajax.php"); ?>', {
-                    method: 'POST',
-                    body: data
-                })
-                .then(r => r.json())
-                .then(r => {
-                    userSearchResults.innerHTML = '';
-                    if (r.success && r.data.length) {
-                        r.data.forEach(function(user) {
-                            var li = document.createElement('li'),
-                                text = user.display_name;
-                            if (user.user_email) text += ' (' + user.user_email + ')';
-                            li.textContent = text;
-                            li.dataset.userId    = user.ID;
-                            li.dataset.firstName = user.first_name;
-                            li.dataset.lastName  = user.last_name;
-                            li.dataset.email     = user.user_email;
-                            li.dataset.phone     = user.billing_phone || '';
-                            li.dataset.company   = user.company || user.billing_company || '';
-                            li.dataset.address1  = user.billing_address_1 || '';
-                            li.dataset.postcode  = user.billing_postcode || '';
-                            li.dataset.city      = user.billing_city || '';
-                            li.addEventListener('click', function() {
-                                maatwerkVoornaam.value   = this.dataset.firstName;
-                                maatwerkAchternaam.value = this.dataset.lastName;
-                                maatwerkEmail.value      = this.dataset.email;
-                                maatwerkTelefoon.value   = this.dataset.phone;
-                                bedrijfsnaam.value       = this.dataset.company;
-                                straatHuisnummer.value   = this.dataset.address1;
-                                postcode.value           = this.dataset.postcode;
-                                plaats.value             = this.dataset.city;
-                                hiddenUserId.value       = this.dataset.userId;
-                                userSearchResults.style.display = 'none';
-                                userSearchInput.value = this.textContent;
-                            });
-                            userSearchResults.appendChild(li);
-                        });
-                        userSearchResults.style.display = 'block';
-                    } else {
-                        userSearchResults.style.display = 'none';
-                    }
-                });
-            }, 300);
-        });
-        document.addEventListener('click', function(e) {
-            if (!userSearchInput.contains(e.target) && !userSearchResults.contains(e.target)) {
-                userSearchResults.style.display = 'none';
-            }
-        });
-
-        // --- Dynamisch PDF-velden ---
-        var pdfContainer = document.getElementById('pdf-uploads-container'),
-            addPdfBtn    = document.getElementById('add-pdf-button'),
-            pdfCount     = 1;
-        function toggleRemoveButtons() {
-            var groups = pdfContainer.querySelectorAll('.pdf-upload-group');
-            groups.forEach(function(g, i) {
-                var btn = g.querySelector('.remove-button');
-                if (btn) btn.style.display = (groups.length > 1 ? 'flex' : 'none');
-            });
-        }
-        toggleRemoveButtons();
-        addPdfBtn.addEventListener('click', function() {
-            var div = document.createElement('div');
-            div.className = 'pdf-upload-group new-pdf-group';
-            div.id = 'pdf-upload-group-' + pdfCount;
-            div.innerHTML = `
-                <div class="form-field">
-                    <label for="pdf_upload_${pdfCount}">Upload PDF</label>
-                    <input type="file" id="pdf_upload_${pdfCount}" name="pdf_upload[]" accept=".pdf">
-                </div>
-                <div class="visibility-field">
-                    <label for="pdf_visibility_${pdfCount}">Zichtbaarheid</label>
-                    <select name="pdf_visibility[]" id="pdf_visibility_${pdfCount}">
-                        <option value="public">Alle Werknemers</option>
-                        <option value="private">Interne medewerkers</option>
-                    </select>
-                </div>
-                <button type="button" class="pdf-action-button remove-button" data-id="${pdfCount}">–</button>
-    `;
-            pdfContainer.insertBefore(div, addPdfBtn);
-            pdfCount++;
-            toggleRemoveButtons();
-        });
-        pdfContainer.addEventListener('click', function(e) {
-            var btn = e.target.closest('.remove-button');
-            if (btn) {
-                var group = btn.closest('.pdf-upload-group');
-                if (group) {
-                    group.remove();
-                    toggleRemoveButtons();
-                }
-            }
-        });
-
-        // --- Dynamisch medewerker velden op basis van aantal_medewerkers ---
-        var medewerkerCountInput = document.getElementById('aantal_medewerkers');
-        var employeeContainer = document.getElementById('employee-details-container');
-        // Huidige data uit PHP
-        var existingEmployees = <?php echo isset($form_data['employee_details']) ? wp_json_encode($form_data['employee_details']) : '[]'; ?>;
-
-        function renderEmployeeBlocks(count) {
-            employeeContainer.innerHTML = '';
-            for (var i = 0; i < count; i++) {
-                var data = existingEmployees[i] || { name: '', start: '', end: '' };
-                var wrapper = document.createElement('div');
-                wrapper.className = 'employee-group';
-                wrapper.setAttribute('data-index', i);
-                wrapper.innerHTML = `
-                    <div class="field">
-                        <label for="employee_name_${i}">Naam medewerker</label>
-                        <input type="text" id="employee_name_${i}" name="employee_name[]" placeholder="Naam" value="${data.name ? data.name.replace(/"/g,'&quot;') : ''}">
-                    </div>
-                    <div class="field">
-                        <label for="employee_start_${i}">Start tijd medewerker</label>
-                        <input type="time" id="employee_start_${i}" name="employee_start[]" value="${data.start || ''}">
-                    </div>
-                    <div class="field">
-                        <label for="employee_end_${i}">Eind tijd medewerker</label>
-                        <input type="time" id="employee_end_${i}" name="employee_end[]" value="${data.end || ''}">
-                    </div>
-                `;
-                employeeContainer.appendChild(wrapper);
-            }
-        }
-
-        // Initial render op basis van huidige waarde
-        function syncMedewerkers() {
-            var num = parseInt(medewerkerCountInput.value, 10);
-            if (isNaN(num) || num < 0) num = 0;
-            renderEmployeeBlocks(num);
-        }
-
-        medewerkerCountInput.addEventListener('input', function() {
-            syncMedewerkers();
-        });
-
-        // Als pagina geladen wordt, zorgen dat we consistent zijn
-        syncMedewerkers();
-
-        // --- Verwijder-knop via AJAX ---
-        var deleteBtn = document.getElementById('delete-order-button');
-        if (deleteBtn) {
-            deleteBtn.addEventListener('click', function() {
-                if (!confirm('Weet je zeker dat je deze bestelling wilt verwijderen?')) return;
-                var data = new URLSearchParams();
-                data.append('action', 'delete_maatwerk_order');
-                data.append('order_id', '<?php echo esc_js($edit_post_id); ?>');
-                data.append('nonce', '<?php echo wp_create_nonce("delete_maatwerk_order_nonce"); ?>');
-                fetch('<?php echo admin_url("admin-ajax.php"); ?>', {
-                    method: 'POST',
-                    headers: {'Content-Type':'application/x-www-form-urlencoded'},
-                    body: data
-                })
-                .then(r=>r.json())
-                .then(j=>{
-                    if (j.success) {
-                        if (window.opener) window.opener.location.reload();
-                        window.close();
-                    } else {
-                        alert('Verwijderen mislukt: ' + (j.data || 'Onbekende fout.'));
-                    }
-                })
-                .catch(error => {
-                    console.error('Fout bij verwijderen:', error);
-                    alert('Er is een netwerkfout opgetreden bij het verwijderen.');
-                });
-            });
-        }
-    });
-    </script>
+    
 
     <?php
     return ob_get_clean();
@@ -1256,12 +666,10 @@ function display_maatwerk_bestelformulier() {
 |--------------------------------------------------------------------------
 */
 // Hook voor ingelogde gebruikers
-add_action('wp_ajax_maatwerk_search_users', 'maatwerk_search_users_ajax');
 // Hook voor niet-ingelogde gebruikers (als je wilt dat iedereen kan zoeken)
-// add_action('wp_ajax_nopriv_maatwerk_search_users', 'maatwerk_search_users_ajax');
+
 //
 // **PLAATS HIERONDER** je delete-handler:
-add_action( 'wp_ajax_delete_maatwerk_order', 'delete_maatwerk_order_ajax' );
 function delete_maatwerk_order_ajax() {
     // Nonce controle toevoegen voor veiligheid
     if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'delete_maatwerk_order_nonce' ) ) {

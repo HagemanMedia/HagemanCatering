@@ -1,0 +1,434 @@
+/* Basis styling voor het formulier */
+.maatwerk-bestelformulier-wrapper {
+max-width: 800px;
+margin: 30px auto;
+padding: 0;
+background: none;
+border-radius: 0;
+box-shadow: none;
+font-family: "Roboto", sans-serif;
+line-height: 1.6;
+color: #E0E0E0;
+}
+
+.maatwerk-bestelformulier-wrapper h2 {
+display: none;
+}
+
+.maatwerk-bestelformulier-wrapper .form-section-title {
+color: #4CAF50;
+font-size: 1.6em;
+margin-top: 30px;
+margin-bottom: 15px;
+border-bottom: 2px solid #4CAF50;
+padding-bottom: 5px;
+}
+
+.maatwerk-bestelformulier-wrapper .form-group {
+margin-bottom: 20px;
+display: flex;
+flex-wrap: wrap;
+gap: 20px;
+align-items: flex-end; /* Align items at the bottom */
+}
+
+/* Full width for single field groups */
+.maatwerk-bestelformulier-wrapper .form-group.full-width .form-field {
+flex: 1 1 100%;
+min-width: unset;
+}
+
+/* Three columns layout */
+.maatwerk-bestelformulier-wrapper .form-group.three-cols .form-field {
+flex: 1 1 calc(33.33% - 20px); /* Adjust gap if needed */
+min-width: 180px; /* Adjust as needed for smaller screens */
+}
+
+
+.maatwerk-bestelformulier-wrapper .form-field {
+flex: 1 1 calc(50% - 20px);
+min-width: 280px;
+margin-bottom: 0;
+}
+
+.maatwerk-bestelformulier-wrapper .form-group + .form-group {
+margin-top: 20px;
+}
+
+.maatwerk-bestelformulier-wrapper input[type="text"],
+.maatwerk-bestelformulier-wrapper input[type="email"],
+.maatwerk-bestelformulier-wrapper input[type="tel"],
+.maatwerk-bestelformulier-wrapper input[type="date"],
+.maatwerk-bestelformulier-wrapper input[type="time"],
+.maatwerk-bestelformulier-wrapper input[type="number"],
+.maatwerk-bestelformulier-wrapper textarea,
+.maatwerk-bestelformulier-wrapper input[type="file"],
+.maatwerk-bestelformulier-wrapper select {
+width: 100%;
+padding: 12px;
+border: 1px solid #555;
+border-radius: 5px;
+font-size: 1em;
+box-sizing: border-box;
+transition: border-color 0.3s ease, background-color 0.3s ease;
+background-color: #3B3B4C;
+color: #FFFFFF;
+height: 44px; /* Fix the height for all input/select fields */
+}
+
+.maatwerk-bestelformulier-wrapper textarea {
+height: auto; /* Override fixed height for textarea */
+min-height: 100px;
+}
+
+.maatwerk-bestelformulier-wrapper input[type="file"] {
+padding: 10px;
+}
+
+.maatwerk-bestelformulier-wrapper input[type="text"]:focus,
+.maatwerk-bestelformulier-wrapper input[type="email"]:focus,
+.maatwerk-bestelformulier-wrapper input[type="tel"]:focus,
+.maatwerk-bestelformulier-wrapper input[type="date"]:focus,
+.maatwerk-bestelformulier-wrapper input[type="time"]:focus,
+.maatwerk-bestelformulier-wrapper input[type="number"]:focus,
+.maatwerk-bestelformulier-wrapper textarea:focus,
+.maatwerk-bestelformulier-wrapper input[type="file"]:focus,
+.maatwerk-bestelformulier-wrapper select:focus {
+border-color: #4CAF50;
+outline: none;
+background-color: #4C4C60;
+}
+
+.maatwerk-bestelformulier-wrapper input[type="submit"] {
+display: block;
+width: auto;
+padding: 15px 30px;
+background-color: #4CAF50;
+color: white;
+border: none;
+border-radius: 5px;
+font-size: 1.1em;
+font-weight: bold;
+cursor: pointer;
+transition: background-color 0.3s ease;
+margin-top: 25px;
+margin-left: 0; /* Links uitlijnen */
+margin-right: auto;
+}
+
+.maatwerk-bestelformulier-wrapper input[type="submit"]:hover {
+background-color: #388E3C;
+}
+
+.maatwerk-bestelformulier-wrapper .required-field {
+color: #8BC34A;
+font-weight: normal;
+}
+
+/* Feedback berichten */
+.maatwerk-bestelformulier-wrapper .form-success {
+background-color: #4CAF50;
+color: #fff;
+border: 1px solid #388E3C;
+padding: 15px;
+border-radius: 5px;
+margin-bottom: 20px;
+text-align: center;
+}
+
+.maatwerk-bestelformulier-wrapper .form-error {
+background-color: #F44336;
+color: #fff;
+border: 1px solid #D32F2F;
+padding: 15px;
+border-radius: 5px;
+margin-bottom: 20px;
+text-align: center;
+}
+
+.maatwerk-bestelformulier-wrapper .form-error ul {
+list-style-type: none;
+padding: 0;
+margin: 10px 0 0 0;
+text-align: left;
+}
+
+.maatwerk-bestelformulier-wrapper .form-error li {
+margin-bottom: 5px;
+}
+.maatwerk-bestelformulier-wrapper label {
+display: block;
+margin-bottom: 5px;
+color: #fff;
+font-size: 0.9em;
+}
+
+/* Styling voor de autocomplete resultaten */
+.user-search-results {
+list-style: none;
+padding: 0;
+margin: 0; /* Belangrijk: geen margin boven/onder */
+border: 1px solid #555;
+background-color: #3B3B4C;
+max-height: 200px;
+overflow-y: auto;
+position: absolute;
+width: 100%; /* Maak de breedte gelijk aan de container */
+z-index: 10;
+border-radius: 0 0 5px 5px; /* Alleen onderranden afronden */
+box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+box-sizing: border-box; /* Zorg dat padding en border binnen de breedte vallen */
+}
+
+.user-search-results li {
+padding: 10px 12px;
+cursor: pointer;
+color: #E0E0E0;
+border-bottom: 1px solid #555;
+}
+
+.user-search-results li:last-child {
+border-bottom: none;
+}
+
+.user-search-results li:hover {
+background-color: #4C4C60;
+}
+.form-field.user-search-container {
+position: relative; /* Belangrijk voor positionering van de resultaten */
+}
+/* Verwijder de border-radius aan de onderkant van de input als de resultaten zichtbaar zijn */
+#user_search.results-visible {
+border-bottom-left-radius: 0;
+border-bottom-right-radius: 0;
+}
+
+/* Nieuwe styling voor dynamische PDF velden */
+#pdf-uploads-container {
+position: relative; /* Enable absolute positioning for children */
+padding-bottom: 40px; /* Make space for the absolute add button */
+margin-bottom: 20px; /* Add some margin below the whole section */
+}
+
+.pdf-upload-group {
+position: relative; /* Belangrijk voor absolute positionering van de knop */
+display: flex;
+flex-wrap: wrap;
+gap: 15px;
+margin-bottom: 15px;
+align-items: flex-end; /* Zorgt ervoor dat alle elementen aan de onderkant uitlijnen */
+border: 1px solid #555;
+padding: 15px;
+border-radius: 5px;
+background-color: #353545;
+}
+
+.pdf-upload-group .form-field {
+flex: 1 1 calc(70% - 15px); /* Neem 70% van de breedte voor het bestand */
+min-width: 250px;
+}
+
+.pdf-upload-group .visibility-field {
+flex: 1 1 calc(30% - 15px); /* Neem 30% van de breedte voor de schakelaar */
+min-width: 120px;
+}
+
+/* Styling voor de nieuwe icon-buttons */
+.pdf-action-button {
+background-color: #4CAF50; /* Groen voor toevoegen */
+color: white;
+border: none;
+border-radius: 50%; /* Rond maken */
+width: 40px; /* Vaste breedte */
+height: 40px; /* Vaste hoogte */
+font-size: 1.5em; /* Groter icoon */
+display: flex;
+justify-content: center;
+align-items: center;
+cursor: pointer;
+transition: background-color 0.3s ease, transform 0.2s ease;
+flex-shrink: 0; /* Voorkom dat de knop kleiner wordt */
+box-sizing: border-box; /* Zorg dat padding en border binnen de afmetingen vallen */
+}
+
+.pdf-action-button:hover {
+background-color: #388E3C;
+transform: scale(1.05);
+}
+
+/* Specifieke styling voor de rode verwijderknop */
+.pdf-action-button.remove-button {
+position: absolute; /* Absoluut positioneren ten opzichte van .pdf-upload-group */
+top: -10px; /* Buiten de groep, beetje naar boven */
+right: -10px; /* Buiten de groep, beetje naar rechts */
+background-color: #F44336; /* Rood voor verwijderen */
+width: 28px; /* Kleinere knop */
+height: 28px; /* Kleinere knop */
+font-size: 1.2em; /* Iets kleiner icoon */
+border-radius: 50%; /* Blijft rond */
+padding: 0; /* Geen extra padding */
+box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Een subtiele schaduw */
+z-index: 5; /* Zorg dat het boven de groep ligt */
+}
+
+.pdf-action-button.remove-button:hover {
+background-color: #D32F2F;
+}
+
+.pdf-action-button.add-button {
+position: absolute;
+bottom: 40px;
+left: -10px;
+background-color: #4CAF50;
+color: #fff;             /* Wit voor het plusje */
+width: 28px;
+height: 28px;
+font-size: 1.4em;        /* Groter plusje */
+line-height: 28px;       /* Centreer verticaal */
+text-align: center;      /* Centreer horizontaal */
+border-radius: 50%;
+padding: 0;
+box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+z-index: 5;
+cursor: pointer;
+}
+.pdf-action-button.add-button:hover {
+background-color: #388E3C;
+}
+
+/* Nieuwe styling voor medewerker-groepen */
+.employee-group {
+display: flex;
+flex-wrap: wrap;
+gap: 15px;
+border: 1px solid #555;
+padding: 15px;
+border-radius: 5px;
+background-color: #2F2F41;
+margin-bottom: 15px;
+align-items: flex-end;
+}
+.employee-group .field {
+flex: 1 1 calc(33.33% - 15px);
+min-width: 150px;
+}
+
+/* Responsive aanpassingen */
+@media (max-width: 768px) {
+.maatwerk-bestelformulier-wrapper .form-field {
+flex: 1 1 100%;
+}
+.maatwerk-bestelformulier-wrapper .form-group.three-cols .form-field {
+flex: 1 1 100%; /* Maak ze stapelen op kleine schermen */
+}
+.pdf-upload-group {
+flex-direction: column; /* Stapel elementen verticaal op kleine schermen */
+align-items: stretch; /* Stretch items to full width */
+padding-top: 25px; /* Geef ruimte voor de absolute verwijderknop */
+}
+.pdf-upload-group .form-field,
+.pdf-upload-group .visibility-field {
+flex: 1 1 100%; /* Volle breedte voor alle velden */
+min-width: unset;
+}
+.pdf-upload-group .pdf-action-button.remove-button {
+top: 5px;
+right: 5px;
+width: 25px; /* Iets kleiner op mobiel */
+height: 25px;
+font-size: 1.1em;
+}
+.pdf-action-button.add-button {
+bottom: 5px;
+left: 5px;
+width: 25px;
+height: 25px;
+font-size: 1.1em;
+}
+.employee-group {
+flex-direction: column;
+}
+.employee-group .field {
+flex: 1 1 100%;
+}
+}
+
+.maatwerk-optie-geldig-field {
+    display: none;
+}
+
+.maatwerk-optie-geldig-field.is-visible {
+    display: block;
+}
+
+.maatwerk-bestelformulier-wrapper .required-field.is-hidden {
+    display: none;
+}
+
+.maatwerk-bestelformulier-wrapper .is-hidden {
+    display: none !important;
+}
+
+.maatwerk-bestelformulier-wrapper .form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.maatwerk-bestelformulier-wrapper .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    text-decoration: none;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.maatwerk-bestelformulier-wrapper .button--primary {
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+.maatwerk-bestelformulier-wrapper .button--primary:hover,
+.maatwerk-bestelformulier-wrapper .button--primary:focus {
+    background-color: #388E3C;
+}
+
+.maatwerk-bestelformulier-wrapper .button--danger {
+    background-color: #F44336;
+    color: #fff;
+}
+
+.maatwerk-bestelformulier-wrapper .button--danger:hover,
+.maatwerk-bestelformulier-wrapper .button--danger:focus {
+    background-color: #D32F2F;
+}
+
+.maatwerk-bestelformulier-wrapper .button--warning {
+    background-color: #FF9800;
+    color: #fff;
+}
+
+.maatwerk-bestelformulier-wrapper .button--warning:hover,
+.maatwerk-bestelformulier-wrapper .button--warning:focus {
+    background-color: #E68A00;
+}
+
+.maatwerk-bestelformulier-wrapper .user-search-results.is-hidden {
+    display: none;
+}
+
+.maatwerk-bestelformulier-wrapper .user-search-results li.is-empty {
+    cursor: default;
+    color: #B0B0B0;
+}
+
+.pdf-action-button.is-hidden {
+    display: none;
+}

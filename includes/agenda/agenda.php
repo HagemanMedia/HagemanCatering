@@ -8,11 +8,7 @@ require_once __DIR__ . '/templates/content.php';
 require_once __DIR__ . '/templates/header.php';
 require_once __DIR__ . '/templates/look-and-feel.php';
 
-error_log('DEBUG: File loaded.'); // Debug log: Controleert of het bestand wordt geladen
 
-// Voeg deze code toe aan functions.php of in een plugin
-
-add_shortcode('wc_orders_week_agenda', 'show_wc_orders_week_agenda');
 
 /**
  * Genereert de wekelijkse agenda van WooCommerce bestellingen en maatwerk bestellingen.
@@ -21,11 +17,6 @@ add_shortcode('wc_orders_week_agenda', 'show_wc_orders_week_agenda');
  * @return string De HTML output van de agenda.
  */
 function show_wc_orders_week_agenda($atts) {
-    error_log('show_wc_orders_week_agenda function called.'); // Debug log
-
-    if (function_exists('hageman_catering_enqueue_agenda_assets')) {
-        hageman_catering_enqueue_agenda_assets();
-    }
 
     // --- Toegangscontrole Logica ---
     // Haal de ID van de huidige post/pagina op waar de shortcode wordt gebruikt
@@ -293,7 +284,6 @@ if (isset($_GET['status'])) {
     );
 
     $maatwerk_orders = get_posts($args_maatwerk);
-    error_log('DEBUG: Found ' . count($maatwerk_orders) . ' maatwerk orders for week ' . date('Y/m/d', $week_start) . ' - ' . date('Y/m/d', $week_end)); // Nieuwe debug log voor maatwerk bestellingen
 
     foreach ($maatwerk_orders as $m_order_post) {
         $m_order_id = $m_order_post->ID;
@@ -333,7 +323,6 @@ if (isset($_GET['status'])) {
         if ($parsed_date) {
             $delivery_date_maatwerk = $parsed_date->format('Y/m/d'); // Zorg voor Y/MM/DD voor de agenda key
         } else {
-            error_log('DEBUG: Kon maatwerk datum niet parsen: ' . $datum . ' voor order ID: ' . $m_order_id);
             continue; // Overslaan als datum niet betrouwbaar geparsed kan worden
         }
 
@@ -466,11 +455,8 @@ if (isset($_GET['status'])) {
 /**
  * AJAX handler om de agenda-inhoud dynamisch te laden.
  */
-add_action('wp_ajax_wc_orders_week_agenda_ajax', 'wc_orders_week_agenda_ajax_handler');
-add_action('wp_ajax_nopriv_wc_orders_week_agenda_ajax', 'wc_orders_week_agenda_ajax_handler');
 
 function wc_orders_week_agenda_ajax_handler() {
-    error_log('wc_orders_week_agenda_ajax_handler function called.'); // Debug log
     $start_date = isset($_POST['start_date']) ? sanitize_text_field($_POST['start_date']) : date('Y/m/d', strtotime('monday this week'));
     $agenda_visibility_setting = isset($_POST['agenda_visibility_setting']) ? sanitize_text_field($_POST['agenda_visibility_setting']) : 'alle_werknemers'; // Haal zichtbaarheidsinstelling op van AJAX
 
@@ -549,7 +535,6 @@ function wc_orders_week_agenda_ajax_handler() {
     );
 
     $maatwerk_orders = get_posts($args_maatwerk);
-    error_log('DEBUG: Found ' . count($maatwerk_orders) . ' maatwerk orders (AJAX) for week ' . date('Y/m/d', $week_start) . ' - ' . date('Y/m/d', $week_end)); // Nieuwe debug log
 
     foreach ($maatwerk_orders as $m_order_post) {
         $m_order_id = $m_order_post->ID;
@@ -572,7 +557,6 @@ function wc_orders_week_agenda_ajax_handler() {
         $opmerkingen             = get_post_meta($m_order_id, '_maatwerk_bestelling_opmerkingen', true); // Aangepast naar de correcte meta key
         $order_status_maatwerk   = get_post_meta($m_order_id, 'order_status', true); // Haal de daadwerkelijke maatwerk order status op
         $optie_geldig_tot        = get_post_meta($m_order_id, 'optie_geldig_tot', true); // Haal de optie geldig tot datum op
-        error_log('DEBUG: Maatwerk Order ID: ' . $m_order_id . ' Status: ' . $order_status_maatwerk . ' Datum: ' . $datum . ' Optie geldig tot: ' . $optie_geldig_tot); // Log status en datum
 
         $delivery_date_maatwerk = $datum;
         $delivery_time_maatwerk = $start_tijd;
@@ -594,7 +578,6 @@ function wc_orders_week_agenda_ajax_handler() {
         if ($parsed_date) {
             $delivery_date_maatwerk = $parsed_date->format('Y/m/d');
         } else {
-            error_log('DEBUG: Kon maatwerk datum niet parsen (AJAX): ' . $datum . ' voor order ID: ' . $m_order_id);
             continue;
         }
 
@@ -635,8 +618,6 @@ function wc_orders_week_agenda_ajax_handler() {
 /**
  * AJAX handler om gedetailleerde bestelinformatie op te halen voor de modal.
  */
-add_action('wp_ajax_wc_get_order_details_ajax', 'wc_get_order_details_ajax_handler');
-add_action('wp_ajax_nopriv_wc_get_order_details_ajax', 'wc_get_order_details_ajax_handler');
 
 /* === BEGIN ADD: helper voor logboek weergave (zonder titel, als veld) === */
 function build_logboek_html($post_id) {
@@ -700,7 +681,6 @@ function build_logboek_html($post_id) {
 
 
 function wc_get_order_details_ajax_handler() {
-    error_log('wc_get_order_details_ajax_handler function called for order ID: ' . (isset($_POST['order_id']) ? $_POST['order_id'] : 'N/A') . ' and type: ' . (isset($_POST['order_type']) ? $_POST['order_type'] : 'N/A')); // Debug log
 
     $order_id = isset($_POST['order_id']) ? intval($_POST['order_id']) : 0;
     $order_type = isset($_POST['order_type']) ? sanitize_text_field($_POST['order_type']) : ''; // Haal het type op
@@ -1046,38 +1026,13 @@ function wc_get_order_details_ajax_handler() {
 	wp_send_json_success($output); // Gebruik wp_send_json_success voor consistente AJAX-respons
 }
 
-/* === Logboek module === */
-add_action('save_post', function($post_id, $post, $update) {
-    if (wp_is_post_revision($post_id)) {
-        return;
-    }
-    if (!in_array($post->post_type, ['maatwerk_bestelling', 'shop_order'], true)) {
-        return;
-    }
-    $user_id = get_current_user_id();
-    if (!$user_id) {
-        return;
-    }
-
-    // Originele maker alleen opslaan als nog niet gezet
-    if (!get_post_meta($post_id, '_created_by', true)) {
-        update_post_meta($post_id, '_created_by', $user_id);
-    }
-    // Laatst bewerker altijd bijwerken
-    update_post_meta($post_id, '_last_edited_by', $user_id);
-}, 10, 3);
-/* === END ADD === */
 
 
 /**
  * AJAX handler om een dagelijks productoverzicht te genereren.
  */
-add_action('wp_ajax_wc_get_daily_product_summary_ajax', 'wc_get_daily_product_summary_handler');
-add_action('wp_ajax_nopriv_wc_get_daily_product_summary_ajax', 'wc_get_daily_product_summary_handler');
 
 function wc_get_daily_product_summary_handler() {
-    error_log('wc_get_daily_product_summary_handler function called for day: ' . (isset($_POST['day_date']) ? $_POST['day_date'] : 'N/A'));
-
     $day_date_str = isset($_POST['day_date']) ? sanitize_text_field($_POST['day_date']) : '';
 
     if (empty($day_date_str)) {
