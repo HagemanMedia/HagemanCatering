@@ -1,3 +1,9 @@
+<?php
+
+if (! defined('ABSPATH')) {
+    exit;
+}
+
 error_log('DEBUG: File loaded.'); // Debug log: Controleert of het bestand wordt geladen
 
 // Voeg deze code toe aan functions.php of in een plugin
