@@ -1,0 +1,390 @@
+.wc-weekagenda-google {
+            display: flex;
+            flex-wrap: wrap;
+            overflow-x: visible;
+            gap: 0;
+            font-family: "Roboto", sans-serif;
+            color: #fff;
+            padding: 0;
+            background-color: transparent;
+            border-radius: 8px;
+            box-shadow: none;
+            max-width: 100%;
+            margin: 0;
+            border: none;
+            transition: none;
+        }
+
+        .wc-weekagenda-dag-google {
+            flex-shrink: 0;
+            flex-grow: 1;
+            width: calc(100% / 7);
+            background: transparent;
+            border-radius: 0;
+            padding: 16px;
+            min-height: 200px;
+            box-shadow: none;
+            transition: none;
+            border-top: none;
+            border-right: 1px solid rgba(255, 255, 255, 0.3);
+            border-bottom: none;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 24px;
+            box-sizing: border-box;
+        }
+        .wc-weekagenda-dag-google:nth-child(7n) {
+            border-right: none;
+        }
+
+        .wc-weekagenda-dag-google:hover {
+            transform: none;
+            box-shadow: none;
+            z-index: 1;
+        }
+        .wc-weekagenda-dag-google h4 {
+            margin-top: 0;
+            margin-bottom: 5px;
+            font-size: 1.3em;
+            font-weight: 500;
+            color: #fff;
+            display: block;
+            line-height: 1.2;
+        }
+        .wc-weekagenda-dag-google .wc-day-date {
+            font-size: 0.9em;
+            color: #ccc;
+            margin-bottom: 10px;
+            font-weight: 400;
+            display: block;
+        }
+
+        .wc-order-badge {
+            display: inline-block;
+            color: #fff;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        /* Maatwerk badge kleuren */
+        .wc-order-badge.status-maatwerk-green {
+            background-color: #4CAF50 !important;
+        }
+        .wc-order-badge.status-maatwerk-red {
+            background-color: #F44336 !important;
+        }
+        .wc-order-badge.status-maatwerk-orange {
+            background-color: #FF8C00 !important;
+        }
+		
+.status-maatwerk-purple {
+    background-color: #9C27B0; /* paars */
+    border: 1px solid #7B1FA2;
+    color: #fff;
+}
+
+
+
+        /* WooCommerce badge kleuren */
+        .wc-order-badge.status-wc-green {
+            background-color: #4CAF50 !important;
+        }
+        .wc-order-badge.status-wc-orange {
+            background-color: #FF8C00 !important;
+        }
+        .wc-order-badge.status-wc-red {
+            background-color: #F44336 !important;
+        }
+		
+		.badge.status-datum-in-optie {
+    background: #9C27B0;
+    border: 1px solid #7B1FA2;
+    color: #fff;
+}
+
+
+        .wc-weekagenda-item-google {
+            background: #3B3B4C;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 0.9em;
+            line-height: 1.4;
+            position: relative;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            padding-bottom: 8px;
+            border-bottom: none;
+            cursor: pointer;
+        }
+        .wc-weekagenda-item-google:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        /* Nieuwe border-left stijlen per type */
+        .wc-weekagenda-item-woocommerce {
+            border-left: 4px solid #0000FF;
+        }
+        .wc-weekagenda-item-maatwerk {
+            border-left: 4px solid #800080;
+        }
+
+        .wc-weekagenda-item-google b {
+            color: #fff;
+            font-weight: 500;
+        }
+        .wc-weekagenda-item-google .wc-time-display {
+            font-size: 0.9em;
+            font-weight: bold;
+            display: block;
+            margin-top: 5px;
+        }
+        .wc-weekagenda-item-google .wc-company-name-display {
+            font-size: 0.9em;
+            font-weight: normal;
+            display: block;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+
+        .wc-weekagenda-item-google a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: normal;
+            transition: color 2s ease-in-out;
+        }
+        .wc-weekagenda-item-google a:hover {
+            text-decoration: underline;
+            color: #f0f0f0;
+        }
+        .wc-weekagenda-leeg-google {
+            color: #fff;
+            font-style: italic;
+            padding: 15px;
+            text-align: center;
+            background: #3B3B4C;
+            border-radius: 8px;
+            margin-top: 15px;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .wc-info-text {
+            font-weight: normal;
+            color: #fff;
+            font-size: 0.9em;
+        }
+        .wc-info-text b {
+            font-weight: 500;
+        }
+
+        /* Alle dagspecifieke kleuren voor border-top zijn nu overschreven naar wit */
+        .maandag, .dinsdag, .woensdag, .donderdag, .vrijdag, .zaterdag, .zondag {
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Modale Stijlen */
+        .wc-order-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+            padding-top: 60px;
+        }
+
+        .wc-order-modal-content {
+            background-color: #3B3B4C;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+            color: #fff;
+            font-family: "Roboto", sans-serif;
+        }
+
+        .wc-order-modal-close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            right: 20px;
+            top: 10px;
+        }
+
+        .wc-order-modal-close:hover,
+        .wc-order-modal-close:focus {
+            color: #fff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .wc-modal-top-info {
+            color: #FF8C00;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .wc-modal-top-info span {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .wc-modal-top-info span:last-child {
+            margin-bottom: 0;
+        }
+
+        .wc-modal-detail-section {
+            margin-bottom: 15px;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .wc-modal-detail-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+.wc-modal-detail-section details summary { cursor: pointer; }
+.wc-modal-detail-section ul { margin: 4px 0 0; padding-left: 18px; }
+
+        .wc-modal-detail-section h4 {
+            color: #FF8C00;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .wc-modal-detail-section p {
+            margin: 0;
+            font-size: 0.95em;
+            line-height: 1.4;
+            padding-top: 5px;
+        }
+        .wc-modal-detail-section p.no-title {
+            font-weight: normal;
+        }
+        .wc-modal-detail-section p.no-title strong {
+            font-weight: bold;
+        }
+        .wc-modal-detail-section p + p {
+            margin-top: 5px;
+        }
+
+        .wc-modal-detail-section.ordered-products ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            border-top: none;
+        }
+
+        .wc-modal-detail-section.ordered-products ul li {
+            background-color: transparent;
+            padding: 10px 0;
+            margin-bottom: 0;
+            border-radius: 0;
+            font-size: 0.9em;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .wc-modal-detail-section.ordered-products ul li:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .wc-modal-detail-section.ordered-products ul li .product-name-qty {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 5px;
+        }
+        .wc-modal-detail-section.ordered-products ul li ul {
+            padding-left: 15px;
+            margin-top: 5px;
+            width: 100%;
+            border-top: none;
+        }
+        .wc-modal-detail-section.ordered-products ul li ul li {
+            background-color: transparent;
+            padding: 0;
+            border-bottom: none;
+            margin-bottom: 2px;
+            font-size: 0.85em;
+        }
+
+.wc-daily-summary-button {
+    background-color: #3B3B4C !important;   /* Heldere blauw */
+    color: #fff !important;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.8em;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    margin-top: auto;
+    display: block;
+    text-align: center;
+}
+
+.wc-daily-summary-button:hover {
+    background-color: #3B3B4C !important;   /* Iets donkerder blauw bij hover */
+}
+
+
+
+        /* Note indicator for order items */
+        .wc-weekagenda-item-google[data-has-note="true"] {
+            position: relative; /* Nodig voor positionering van pseudo-element */
+        }
+        .wc-weekagenda-item-google[data-has-note="true"]::after {
+            content: "!"; /* Uitroepteken */
+            display: block;
+            width: 20px;
+            height: 20px;
+            background-color: #FF8C00; /* Oranje */
+            color: #fff;
+            border-radius: 50%; /* Ronde vorm */
+            text-align: center;
+            line-height: 20px; /* Centreer tekst verticaal */
+            font-weight: bold;
+            font-size: 1.1em;
+            position: absolute;
+            top: 5px; /* Pas aan indien nodig */
+            right: 5px; /* Pas aan indien nodig */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            z-index: 10; /* Zorg ervoor dat het boven andere elementen ligt */
+        }
+
+
+        @media (max-width: 600px) {
+            .wc-order-modal-content {
+                width: 95%;
+                margin: 20px auto;
+            }
+        }
+    
+
+@media (max-width:768px){#wc-hide-cancelled{display:none!important}}

@@ -1,0 +1,307 @@
+.wc-nav-button.icon-only {
+    display: flex; /* Maakt de knop een flex-container */
+    justify-content: center; /* Centreert de inhoud (het icoon) horizontaal */
+    align-items: center; /* Centreert de inhoud (het icoon) verticaal */
+    padding: 8px; /* Pas deze waarde aan om de gewenste ruimte rondom het icoon te creëren */
+    /* Optioneel: Stel een vaste breedte en hoogte in voor perfect vierkante knoppen */
+    width: 32px; 
+    height: 32px;
+}
+
+.wc-back-portal-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 32px; 
+    padding: 0 10px;
+    background-color: #2271b1 !important;
+    color: #fff !important;
+    font-weight: bold;
+    border-radius: 4px;
+    text-decoration: none !important; /* niet underlined */
+    line-height: 32px; /* precies gelijk aan hoogte */
+    cursor: pointer;
+    border: none;
+}
+
+.wc-back-portal-button {
+    width: auto;
+    min-width: 160px;
+    padding: 0 12px;
+    background-color: #2271b1 !important;
+    color: #fff !important;
+    font-weight: bold;
+    text-decoration: none;
+    line-height: 44px;
+}
+
+/* Mobiele optimalisaties CSS */
+@media (max-width: 768px) {
+    /* Verberg “Deze week” knop */
+    .wc-today-button {
+        display: none !important;
+    }
+
+    /* Datum helemaal bovenaan */
+    .wc-current-week-display {
+        order: -1;
+        width: 100%;
+        text-align: left;
+        margin-bottom: 8px;
+    }
+
+    /* Knopjes daaronder links uitlijnen */
+    .wc-agenda-navigation,
+    .wc-nav-elements-left,
+    .wc-nav-elements-right {
+        display: flex !important;
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 8px;
+    }
+
+    /* 1) Maatwerk, gebruiker en turflijst naast elkaar */
+    .wc-nav-elements-left {
+        flex: none;
+    }
+
+    /* 2) Verberg zoekbalk */
+    #wc-search-input {
+        display: none !important;
+    }
+
+    /* 3) Refresh en home als kleine icoontjes naast pijltjes */
+    .wc-home-button,
+    .wc-refresh-button,
+    .wc-arrow-button {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+
+.birthday-item   { border-left: 4px solid #FF8C00; }
+.status-birthday { background-color: #FF8C00 !important; }
+
+
+
+.wc-add-maatwerk-day-button {
+    background-color: #009541;
+    border: none;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    transition: background-color .2s ease;
+}
+.wc-add-maatwerk-day-button:hover {
+    background-color: #388E3C;
+}
+
+/* Zoekveld als knop-achtige input */
+#wc-search-input {
+    background-color: #3B3B4c;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    font-weight: bold;
+    cursor: text;
+    height: 32px;
+    line-height: 1.2;
+    min-width: 220px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+/* Placeholder kleur licht(er) zodat leesbaar is */
+#wc-search-input::placeholder {
+    color: rgba(255,255,255,0.8);
+}
+
+#wc-search-input:focus {
+    outline: 2px solid rgba(255,255,255,0.5);
+}
+
+
+/* Datum picker styled als de andere navigatieknoppen, zonder typen */
+#wc-week-date-picker {
+    background-color: #009541;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    font-weight: bold;
+    cursor: pointer;
+    height: 32px;
+    line-height: 1.2;
+    min-width: 140px;
+    box-sizing: border-box;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+
+
+/* Zorg dat de kalenderindicator (pijltje) zichtbaar én wit is */
+#wc-week-date-picker::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+/* Focus styling consistent houden */
+#wc-week-date-picker:focus {
+    outline: 2px solid rgba(255,255,255,0.5);
+    outline-offset: 0;
+}
+
+
+.wc-nav-button.icon-only svg {
+    margin: 0 !important; /* Verwijdert eventuele resterende marges op de SVG */
+}
+        /* Importeer Google Font - Roboto wordt veel gebruikt in Google-producten */
+        500;700&display=swap");
+
+        
+
+        .wc-agenda-navigation {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px 0;
+            background-color: transparent;
+            border-bottom: none;
+        }
+        .wc-nav-button {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            margin-left: 10px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .wc-nav-button:first-child {
+            margin-left: 0;
+        }
+        .wc-nav-button:hover {
+            background-color: #45a049;
+        }
+    #wc-hide-cancelled.wc-nav-button {
+        background-color: #F44336;  /* Felrood */
+        color: #fff;
+    }
+    #wc-hide-cancelled.wc-nav-button:hover {
+        background-color: #D32F2F;  /* Iets donkerder bij hover */
+    }
+        .wc-current-week-display {
+            font-size: 1.2em;
+            font-weight: 500;
+            color: #fff;
+            flex-grow: 1;
+            text-align: center;
+            margin-bottom: 0;
+        }
+        .wc-nav-elements-right, .wc-nav-elements-left {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .wc-nav-elements-left {
+            margin-right: auto;
+        }
+        .wc-nav-elements-right {
+            margin-left: auto;
+        }
+
+        @media (max-width: 768px) {
+            .wc-agenda-navigation {
+                flex-direction: column;
+                align-items: center;
+            }
+            .wc-current-week-display {
+                margin-bottom: 10px;
+            }
+            .wc-nav-elements-left,
+            .wc-nav-elements-right {
+                flex-basis: 100%;
+                justify-content: center;
+                margin-bottom: 10px;
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+
+        .wc-arrow-button {
+            background-color: #4CAF50;
+            border: none;
+            color: #fff;
+            font-size: 0.9em;
+            padding: 8px 12px;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            margin: 0;
+        }
+        .wc-arrow-button:hover {
+            background-color: #45a049;
+            color: #fff;
+        }
+
+        .wc-today-button {
+            margin-right: 4px;
+        }
+
+        .wc-refresh-button {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .wc-refresh-button:hover {
+            background-color: #45a049;
+        }
+        .wc-refresh-button svg {
+            width: 1em;
+            height: 1em;
+        }
+
+        .wc-date-filter-button {
+            position: relative;
+            text-align: center;
+            min-width: 120px;
+            padding: 8px 12px;
+            font-size: 0.9em;
+            box-sizing: border-box;
+            width: 120px;
+        }
